@@ -1,11 +1,12 @@
-# career_qa.py
-
 import openai
-from openai import OpenAI
 import re
 import json
+import os
+from datetime import datetime
+from openai import OpenAI
 
-# Static system prompt
+# --- Prompt and questions ---
+
 SYSTEM_PROMPT = """
 You are an AI career coach. Analyze the user's anonymized answers about their career preferences, motivations, and skills.
 
@@ -32,6 +33,7 @@ questions = {
     "openness": "Are you open to changing industries or job functions? Why or why not?"
 }
 
+# --- Core Q&A flow ---
 
 def anonymize_text(text):
     text = re.sub(r'\b[A-Z][a-z]+ [A-Z][a-z]+\b', '[REDACTED NAME]', text)
@@ -58,7 +60,7 @@ def analyze_with_llm(responses, api_key):
     input_text = "\n".join([f"{k}: {v}" for k, v in responses.items()])
 
     response = client.chat.completions.create(
-        model="gpt-3.5-turbo",  # Or "gpt-4-turbo" if preferred
+        model="gpt-3.5-turbo",  # Or "gpt-4-turbo" if you have access
         messages=[
             {"role": "system", "content": SYSTEM_PROMPT},
             {"role": "user", "content": input_text}
@@ -71,3 +73,47 @@ def analyze_with_llm(responses, api_key):
         return json.loads(result)
     except json.JSONDecodeError:
         return {"raw_response": result, "error": "Invalid JSON"}
+
+# --- Save/load functions ---
+
+SESSION_DIR = "sessions"
+os.makedirs(SESSION_DIR, exist_ok=True)
+
+
+def save_answers_to_file(responses):
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    filename = os.path.join(SESSION_DIR, f"qa_{timestamp}.json")
+    with open(filename, "w") as f:
+        json.dump(responses, f, indent=2)
+    print(f"\n✅ Saved responses to {filename}")
+
+
+def list_saved_sessions():
+    files = sorted(
+        f for f in os.listdir(SESSION_DIR)
+        if f.startswith("qa_") and f.endswith(".json")
+    )
+    return files
+
+
+def load_answers_from_file():
+    sessions = list_saved_sessions()
+    if not sessions:
+        print("No saved sessions found.")
+        return None
+
+    print("\nAvailable sessions:")
+    for i, fname in enumerate(sessions):
+        print(f"[{i+1}] {fname}")
+
+    choice = input("Select a session to load: ")
+    try:
+        idx = int(choice) - 1
+        file_path = os.path.join(SESSION_DIR, sessions[idx])
+        with open(file_path) as f:
+            data = json.load(f)
+        print(f"\n✅ Loaded session: {sessions[idx]}")
+        return data
+    except (ValueError, IndexError):
+        print("Invalid selection.")
+        return None
