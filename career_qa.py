@@ -1,12 +1,23 @@
 import openai
-import re
 import json
 import os
 from datetime import datetime
+from presidio_analyzer import AnalyzerEngine
+from presidio_anonymizer import AnonymizerEngine
+from presidio_analyzer.nlp_engine import NlpEngineProvider
 from openai import OpenAI
 
-# --- Prompt and questions ---
+# === Initialize Presidio with spaCy small model ===
+configuration = {
+    "nlp_engine_name": "spacy",
+    "models": [{"lang_code": "en", "model_name": "en_core_web_sm"}],
+}
+provider = NlpEngineProvider(nlp_configuration=configuration)
+nlp_engine = provider.create_engine()
+analyzer = AnalyzerEngine(nlp_engine=nlp_engine, supported_languages=["en"])
+anonymizer = AnonymizerEngine()
 
+# === System Prompt ===
 SYSTEM_PROMPT = """
 You are an AI career coach. Analyze the user's anonymized answers about their career preferences, motivations, and skills.
 
@@ -24,6 +35,7 @@ Extract:
 Return your response as JSON.
 """
 
+# === Questions ===
 questions = {
     "motivations": "What motivates you most in your work?",
     "ideal_role": "Describe your ideal role or responsibilities.",
@@ -33,15 +45,16 @@ questions = {
     "openness": "Are you open to changing industries or job functions? Why or why not?"
 }
 
-# --- Core Q&A flow ---
-
+# === Anonymization (filtered) ===
 def anonymize_text(text):
-    text = re.sub(r'\b[A-Z][a-z]+ [A-Z][a-z]+\b', '[REDACTED NAME]', text)
-    text = re.sub(r'\b[A-Z][a-z]+ Inc\.?\b', '[REDACTED COMPANY]', text)
-    text = re.sub(r'\b[A-Z]{2,}\b', '[REDACTED ACRONYM]', text)
-    return text
+    allowed_entities = [
+        "PERSON", "ORG", "EMAIL_ADDRESS", "PHONE_NUMBER", "URL", "LOCATION"
+    ]
+    results = analyzer.analyze(text=text, language="en", entities=allowed_entities)
+    anonymized_result = anonymizer.anonymize(text=text, analyzer_results=results)
+    return anonymized_result.text
 
-
+# === Q&A Flow ===
 def collect_answers(interactive=True, predefined_answers=None):
     responses = {}
     for key, question in questions.items():
@@ -53,14 +66,13 @@ def collect_answers(interactive=True, predefined_answers=None):
         responses[key] = anonymize_text(answer)
     return responses
 
-
 def analyze_with_llm(responses, api_key):
     client = OpenAI(api_key=api_key)
 
     input_text = "\n".join([f"{k}: {v}" for k, v in responses.items()])
 
     response = client.chat.completions.create(
-        model="gpt-3.5-turbo",  # Or "gpt-4-turbo" if you have access
+        model="gpt-3.5-turbo",
         messages=[
             {"role": "system", "content": SYSTEM_PROMPT},
             {"role": "user", "content": input_text}
@@ -74,11 +86,9 @@ def analyze_with_llm(responses, api_key):
     except json.JSONDecodeError:
         return {"raw_response": result, "error": "Invalid JSON"}
 
-# --- Save/load functions ---
-
+# === Session Save/Load ===
 SESSION_DIR = "sessions"
 os.makedirs(SESSION_DIR, exist_ok=True)
-
 
 def save_answers_to_file(responses):
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -87,14 +97,12 @@ def save_answers_to_file(responses):
         json.dump(responses, f, indent=2)
     print(f"\n✅ Saved responses to {filename}")
 
-
 def list_saved_sessions():
     files = sorted(
         f for f in os.listdir(SESSION_DIR)
         if f.startswith("qa_") and f.endswith(".json")
     )
     return files
-
 
 def load_answers_from_file():
     sessions = list_saved_sessions()
