@@ -56,16 +56,18 @@ def start_qa(session_name: str = None):
 def analyze(req: AnalyzeRequest):
     merged = merge_profile(req.resume, req.qa)
     report = analyze_profile(merged, req.api_key)
-    save_coaching_report(report, name=req.session_name)
-    summary = print_human_summary(report)
-    report = analyze_profile(merged, req.api_key)
 
     if "error" in report:
+        print("⚠️ GPT returned invalid JSON:")
+        print(report["raw_response"])  # 👈 You'll see this in Render logs
         return {
-            "summary": "⚠️ GPT response was invalid. Here's the raw output for debugging.",
+            "summary": "⚠️ GPT response was not valid JSON.",
             "report": report
         }
 
+    save_coaching_report(report, name=req.session_name)
+    summary = print_human_summary(report)
+    report = analyze_profile(merged, req.api_key)
     return {"report": report, "summary": summary}
 
 @app.get("/health")
