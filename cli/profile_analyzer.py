@@ -86,7 +86,10 @@ Candidate Q&A:
 
     try:
         return json.loads(cleaned)
-    except json.JSONDecodeError:
+    except json.JSONDecodeError as e:
+        print("❌ JSON parsing failed:", e)
+        print("📦 Raw GPT output:")
+        print(raw)
         return {
             "error": "Response was not valid JSON",
             "raw_response": raw
