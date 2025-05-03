@@ -58,6 +58,14 @@ def analyze(req: AnalyzeRequest):
     report = analyze_profile(merged, req.api_key)
     save_coaching_report(report, name=req.session_name)
     summary = print_human_summary(report)
+    report = analyze_profile(merged, req.api_key)
+
+    if "error" in report:
+        return {
+            "summary": "⚠️ GPT response was invalid. Here's the raw output for debugging.",
+            "report": report
+        }
+
     return {"report": report, "summary": summary}
 
 @app.get("/health")
