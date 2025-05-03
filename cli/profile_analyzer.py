@@ -40,7 +40,12 @@ def clean_llm_response(content: str) -> str:
         content = content[:-3].strip()
     return content
 
-def analyze_profile(profile, api_key):
+def analyze_profile(profile, api_key=None):
+    # Prefer explicit API key, fallback to env var
+    api_key = api_key or os.getenv("OPENAI_API_KEY")
+    if not api_key:
+        raise ValueError("No OpenAI API key provided or found in environment.")
+
     client = OpenAI(api_key=api_key)
 
     prompt = f"""
