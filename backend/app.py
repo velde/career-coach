@@ -1,5 +1,6 @@
 import sys
 from pathlib import Path
+from pydantic import BaseModel
 import json
 
 # allow imports from ../cli
@@ -15,6 +16,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from tempfile import NamedTemporaryFile
 import shutil
 
+class AnalyzeRequest(BaseModel):
+    resume: dict
+    qa: dict
+    session_name: str = "web_session"
+    api_key: str = ""
 
 app = FastAPI()
 app.add_middleware(
@@ -47,10 +53,10 @@ def start_qa(session_name: str = None):
     return answers
 
 @app.post("/analyze")
-def analyze(profile: dict, api_key: str):
-    merged = merge_profile(profile['resume'], profile['qa'])
-    report = analyze_profile(merged, api_key)
-    save_coaching_report(report, name=profile.get('session_name', 'web_session'))
+def analyze(req: AnalyzeRequest):
+    merged = merge_profile(req.resume, req.qa)
+    report = analyze_profile(merged, req.api_key)
+    save_coaching_report(report, name=req.session_name)
     summary = print_human_summary(report)
     return {"report": report, "summary": summary}
 
