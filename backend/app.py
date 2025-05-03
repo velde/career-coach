@@ -1,5 +1,6 @@
 import sys
 from pathlib import Path
+import json
 
 # allow imports from ../cli
 sys.path.insert(0, str(Path(__file__).parent.parent / "cli"))
@@ -56,6 +57,12 @@ def analyze(profile: dict, api_key: str):
 @app.get("/health")
 def health_check():
     return {"status": "ok"}
+
+@app.get("/questions")
+def get_questions():
+    shared_path = Path(__file__).parent.parent / "shared" / "questions.json"
+    with open(shared_path, "r", encoding="utf-8") as f:
+        return json.load(f)
 
 # To run backend locally:
 # 1. install dependencies: pip install fastapi uvicorn
