@@ -64,14 +64,21 @@ Candidate Q&A:
 {json.dumps(profile.get('raw_qa_responses', {}), indent=2)}
     """
 
-    response = client.chat.completions.create(
-        model="gpt-3.5-turbo",
-        messages=[
-            {"role": "system", "content": "You are a career coach assistant."},
-            {"role": "user", "content": prompt}
-        ],
-        temperature=0.7,
-    )
+    print("🔍 Prompt preview:")
+    print(prompt[:500])  # just the first 500 chars
+
+    try:
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "You are a career coach assistant."},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.7,
+        )
+    except Exception as e:
+        print("❌ GPT request failed:", e)
+        return {"error": "OpenAI API request failed", "exception": str(e)}
 
     content = response.choices[0].message.content
     raw = content.strip()
