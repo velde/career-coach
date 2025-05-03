@@ -2,12 +2,18 @@ import os
 from dotenv import load_dotenv
 from career_qa import (
     collect_answers,
-    analyze_with_llm,
     save_answers_to_file,
     load_answers_from_file
 )
 from resume_parser import parse_pdf_resume
-from profile_analyzer import run_profile_analysis, load_json_file
+from profile_analyzer import (
+    run_profile_analysis,
+    analyze_profile,
+    merge_profile,
+    print_human_summary,
+    save_coaching_report,
+    load_json_file,
+)
 
 load_dotenv()
 api_key = os.getenv("OPENAI_API_KEY")
@@ -39,10 +45,21 @@ resume_path = input("Enter path to your resume PDF (or press Enter to skip and l
 
 if resume_path and os.path.exists(resume_path):
     parse_pdf_resume(resume_path)
-    resume_data = None  # will select later
+    resume_data = None
 else:
     resume_data = None
 
-# === Coaching Summary ===
+# === Profile Analysis & Coaching ===
 print("\n🧠 Launching profile analysis...")
-run_profile_analysis(api_key, qa_data=qa_answers, resume_data=resume_data)
+
+resume_data = resume_data or load_json_file("Select resume file: ", "resumes", "resume_")
+qa_data = qa_answers or load_json_file("Select Q&A file: ", "sessions", "qa_")
+
+if not resume_data or not qa_data:
+    print("❌ Could not continue without both resume and Q&A.")
+    exit()
+
+profile = merge_profile(resume_data, qa_data)
+report = analyze_profile(profile, api_key)
+summary = print_human_summary(report)
+save_coaching_report(report, summary_text=summary)

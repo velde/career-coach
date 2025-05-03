@@ -27,8 +27,9 @@ def load_json_file(prompt_text, directory, prefix):
 def merge_profile(resume_json, qa_json):
     return {
         "resume": resume_json.get("parsed", {}),
-        "anonymized_resume_text": resume_json.get("anonymized_text", ""),
-        "qa_responses": qa_json
+        "raw_resume_text": resume_json.get("raw_text", ""),  # expect to be added by resume_parser
+        "raw_qa_responses": qa_json.get("raw_answers", qa_json),  # fallback to anonymized if raw not present
+        "qa_responses": qa_json  # keep both for future use
     }
 
 def clean_llm_response(content: str) -> str:
@@ -43,7 +44,9 @@ def analyze_profile(profile, api_key):
     client = OpenAI(api_key=api_key)
 
     prompt = f"""
-You are an expert career coach. Analyze the following candidate profile, which includes a parsed resume and answers to career-related questions.
+You are an expert career coach. Analyze the following candidate profile, which includes a parsed resume and career-related answers.
+
+Use the raw resume text and raw Q&A answers to give the most personalized advice.
 
 Your job is to:
 1. Determine if this candidate should pivot, grow in place, or reinvent.
@@ -54,8 +57,11 @@ Your job is to:
 
 Return your response as a structured JSON object with keys: "profile_type", "summary", "strengths", "gaps", "recommendations", and "suggested_jobs".
 
-Candidate Profile:
-{json.dumps(profile, indent=2)}
+Candidate Resume:
+{profile.get('raw_resume_text', '')}
+
+Candidate Q&A:
+{json.dumps(profile.get('raw_qa_responses', {}), indent=2)}
     """
 
     response = client.chat.completions.create(
@@ -100,7 +106,6 @@ def format_list(label, items, emoji):
     return f"{emoji} {label}:\n{lines}\n"
 
 def fix_character_split(value):
-    """Convert ['F', 'o', 'o'] → 'Foo' if it's a character list."""
     if isinstance(value, list) and len(value) > 10 and all(isinstance(c, str) and len(c) == 1 for c in value):
         return "".join(value).strip()
     return value
@@ -135,6 +140,7 @@ def print_human_summary(report):
     lines.append(format_list("Skill Gaps", report.get("gaps", []), "⚠️"))
     lines.append(format_list("Recommendations", report.get("recommendations", []), "🎯"))
     lines.append(format_list("Suggested Jobs", report.get("suggested_jobs", []), "👔"))
+
 
     full_summary = "\n".join(lines)
     print(full_summary)

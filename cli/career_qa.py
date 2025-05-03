@@ -2,24 +2,10 @@ import openai
 import json
 import os
 from datetime import datetime
-from presidio_analyzer import AnalyzerEngine
-from presidio_anonymizer import AnonymizerEngine
-from presidio_analyzer.nlp_engine import NlpEngineProvider
 from openai import OpenAI
 
-# === Initialize Presidio with spaCy small model ===
-configuration = {
-    "nlp_engine_name": "spacy",
-    "models": [{"lang_code": "en", "model_name": "en_core_web_sm"}],
-}
-provider = NlpEngineProvider(nlp_configuration=configuration)
-nlp_engine = provider.create_engine()
-analyzer = AnalyzerEngine(nlp_engine=nlp_engine, supported_languages=["en"])
-anonymizer = AnonymizerEngine()
-
-# === System Prompt ===
 SYSTEM_PROMPT = """
-You are an AI career coach. Analyze the user's anonymized answers about their career preferences, motivations, and skills.
+You are an AI career coach. Analyze the user's responses about their career preferences, motivations, and skills.
 
 Classify the user as one of:
 (a) Pivot Candidate
@@ -35,7 +21,6 @@ Extract:
 Return your response as JSON.
 """
 
-# === Questions ===
 questions = {
     "motivations": "What motivates you most in your work?",
     "ideal_role": "Describe your ideal role or responsibilities.",
@@ -45,16 +30,6 @@ questions = {
     "openness": "Are you open to changing industries or job functions? Why or why not?"
 }
 
-# === Anonymization (filtered) ===
-def anonymize_text(text):
-    allowed_entities = [
-        "PERSON", "ORG", "EMAIL_ADDRESS", "PHONE_NUMBER", "URL", "LOCATION"
-    ]
-    results = analyzer.analyze(text=text, language="en", entities=allowed_entities)
-    anonymized_result = anonymizer.anonymize(text=text, analyzer_results=results)
-    return anonymized_result.text
-
-# === Q&A Flow ===
 def collect_answers(interactive=True, predefined_answers=None):
     responses = {}
     for key, question in questions.items():
@@ -63,7 +38,7 @@ def collect_answers(interactive=True, predefined_answers=None):
             answer = input("Your answer: ").strip()
         else:
             answer = predefined_answers.get(key, "")
-        responses[key] = anonymize_text(answer)
+        responses[key] = answer
     return responses
 
 def analyze_with_llm(responses, api_key):
@@ -86,7 +61,6 @@ def analyze_with_llm(responses, api_key):
     except json.JSONDecodeError:
         return {"raw_response": result, "error": "Invalid JSON"}
 
-# === Session Save/Load ===
 SESSION_DIR = "sessions"
 os.makedirs(SESSION_DIR, exist_ok=True)
 
@@ -95,7 +69,7 @@ def save_answers_to_file(responses):
     filename = os.path.join(SESSION_DIR, f"qa_{timestamp}.json")
     with open(filename, "w") as f:
         json.dump(responses, f, indent=2)
-    print(f"\n✅ Saved responses to {filename}")
+    print(f"\n✅ Saved Q&A responses to {filename}")
 
 def list_saved_sessions():
     files = sorted(
