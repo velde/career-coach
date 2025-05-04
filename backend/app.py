@@ -72,9 +72,17 @@ def health_check():
 
 @app.get("/questions")
 def get_questions():
-    shared_path = Path(__file__).parent.parent / "shared" / "questions.json"
-    with open(shared_path, "r", encoding="utf-8") as f:
-        return json.load(f)
+    project_root = Path(__file__).resolve().parent.parent
+    questions_path = project_root / "shared" / "questions.json"
+
+    if not questions_path.exists():
+        raise HTTPException(status_code=500, detail=f"questions.json not found at {questions_path}")
+    
+    with open(questions_path, "r", encoding="utf-8") as f:
+        questions = json.load(f)
+
+    return questions
+
 
 # To run backend locally:
 # 1. install dependencies: pip install fastapi uvicorn
