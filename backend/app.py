@@ -22,14 +22,18 @@ class AnalyzeRequest(BaseModel):
     session_name: str = "web_session"
 
 app = FastAPI()
+# Add CORS middleware immediately after app creation
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:3000",
-        "https://career-coach-alpha.vercel.app/"],
+        "https://career-coach.vercel.app",  # ✅ your actual Vercel frontend
+    ],
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 @app.post("/upload_resume")
 async def upload_resume(file: UploadFile = File(...)):
