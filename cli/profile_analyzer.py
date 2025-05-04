@@ -155,13 +155,11 @@ def print_human_summary(report):
 
     lines = []
     lines.append(f"\n🧭 Profile Type: {report.get('profile_type', 'N/A')}")
-    lines.append(f"\n📋 Summary:\n{report.get('summary', '')}")
-
+    lines.append(f"\n📋 Summary:\n{report.get('summary', '')}\n")
     lines.append(format_list("Strengths", report.get("strengths", []), "✅"))
     lines.append(format_list("Skill Gaps", report.get("gaps", []), "⚠️"))
     lines.append(format_list("Recommendations", report.get("recommendations", []), "🎯"))
     lines.append(format_list("Suggested Jobs", report.get("suggested_jobs", []), "👔"))
-
 
     full_summary = "\n".join(lines)
     print(full_summary)
