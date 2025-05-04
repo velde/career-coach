@@ -6,11 +6,10 @@ function App() {
   const [questions, setQuestions] = useState({});
   const [qaAnswers, setQaAnswers] = useState({});
   const [loading, setLoading] = useState(false);
-  const [summary, setSummary] = useState(null);
   const [report, setReport] = useState(null);
   const [error, setError] = useState(null);
 
-  // Load questions from backend on mount
+  // Load questions on mount
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
@@ -26,11 +25,9 @@ function App() {
     fetchQuestions();
   }, []);
 
-  // Upload PDF resume
   const handleUpload = async () => {
     if (!file) return;
     setLoading(true);
-    setSummary(null);
     setReport(null);
     setError(null);
 
@@ -52,11 +49,9 @@ function App() {
     }
   };
 
-  // Submit answers for analysis
   const handleAnalyze = async () => {
     setLoading(true);
     setError(null);
-    setSummary(null);
     setReport(null);
 
     try {
@@ -72,7 +67,6 @@ function App() {
 
       if (!res.ok) throw new Error(`Analyze failed: ${res.status}`);
       const data = await res.json();
-      setSummary(data.summary);
       setReport(data.report);
     } catch (err) {
       setError(err.message);
@@ -84,6 +78,10 @@ function App() {
   return (
     <div style={{ maxWidth: '800px', margin: '2rem auto', fontFamily: 'sans-serif' }}>
       <h1>🧠 Career Coach</h1>
+      <p style={{ marginBottom: '1.5rem' }}>
+        This tool analyzes your resume and career reflections using GPT to provide tailored advice on your career direction,
+        strengths, skill gaps, and potential next steps. Upload your resume (PDF format only) and answer a few guided questions to receive a personalized coaching report.
+      </p>
 
       {/* Resume Upload */}
       <div style={{ marginBottom: '1rem' }}>
@@ -96,18 +94,25 @@ function App() {
       {/* Q&A */}
       {resumeData && (
         <div>
-          <h2>📝 Career Reflection Questions</h2>
+          <h2>Career Reflection Questions</h2>
+          <p style={{ marginBottom: '1rem' }}>
+            These questions help uncover your motivations, preferences, and openness to change.
+            Be honest and specific — the more thoughtful your answers, the more accurate and useful your career coaching summary will be.
+          </p>
           {Object.entries(questions).map(([key, question]) => (
             <div key={key} style={{ marginBottom: '1rem' }}>
               <label><strong>{question}</strong></label><br />
               <textarea
-                rows={2}
+                rows={3}
                 style={{ width: '100%' }}
                 value={qaAnswers[key]}
                 onChange={e => setQaAnswers({ ...qaAnswers, [key]: e.target.value })}
               />
             </div>
           ))}
+          <p style={{ fontStyle: 'italic', marginTop: '1rem' }}>
+            When you press the button below, your resume and reflections will be analyzed using GPT to generate a personalized coaching report.
+          </p>
           <button onClick={handleAnalyze} disabled={loading}>
             Submit Answers & Analyze
           </button>
@@ -128,29 +133,29 @@ function App() {
           whiteSpace: 'pre-wrap',
           wordWrap: 'break-word'
         }}>
-          <h2>🧾 Career Coaching Summary</h2>
+          <h2>Career Coaching Summary</h2>
 
           <p><strong>Profile Type:</strong> {report.profile_type}</p>
           <p><strong>Summary:</strong> {report.summary}</p>
 
           <hr style={{ margin: '1rem 0' }} />
 
-          <h3>💪 Strengths</h3>
+          <h3>Strengths</h3>
           <ul>
             {report.strengths?.map((item, i) => <li key={`strength-${i}`}>{item}</li>)}
           </ul>
 
-          <h3>🛠 Gaps</h3>
+          <h3>Gaps</h3>
           <ul>
             {report.gaps?.map((item, i) => <li key={`gap-${i}`}>{item}</li>)}
           </ul>
 
-          <h3>🧭 Recommendations</h3>
+          <h3>Recommendations</h3>
           <ul>
             {report.recommendations?.map((item, i) => <li key={`rec-${i}`}>{item}</li>)}
           </ul>
 
-          <h3>🎯 Suggested Roles</h3>
+          <h3>Suggested Roles</h3>
           <ul>
             {report.suggested_jobs?.map((item, i) => <li key={`job-${i}`}>{item}</li>)}
           </ul>

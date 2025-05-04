@@ -61,7 +61,7 @@ Your job is to:
 5. Recommend personalized next steps.
 
 Return your response as a structured JSON object using these keys:
-- "profile_type": a one-word category (e.g. "Pivot", "Grow", "Reinvent")
+- "profile_type": a category (e.g. "Pivot", "Grow in place", "Reinvent")
 - "summary": a concise paragraph summarizing the candidate
 - "strengths": a list of natural-language strengths
 - "gaps": a list of skill or experience gaps
@@ -74,9 +74,6 @@ Candidate Resume:
 Candidate Q&A:
 {json.dumps(profile.get('raw_qa_responses', {}), indent=2)}
     """
-
-    print("🔍 Prompt preview:")
-    print(prompt[:500])  # just the first 500 chars
 
     try:
         response = client.chat.completions.create(
