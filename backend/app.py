@@ -20,7 +20,6 @@ class AnalyzeRequest(BaseModel):
     resume: dict
     qa: dict
     session_name: str = "web_session"
-    api_key: str = ""
 
 app = FastAPI()
 app.add_middleware(
@@ -55,19 +54,16 @@ def start_qa(session_name: str = None):
 @app.post("/analyze")
 def analyze(req: AnalyzeRequest):
     merged = merge_profile(req.resume, req.qa)
-    report = analyze_profile(merged, req.api_key)
+    report = analyze_profile(merged)
 
     if "error" in report:
-        print("⚠️ GPT returned invalid JSON:")
-        print(report["raw_response"])  # 👈 You'll see this in Render logs
         return {
-            "summary": "⚠️ GPT response was not valid JSON.",
+            "summary": "⚠️ GPT response was not valid.",
             "report": report
         }
 
-    save_coaching_report(report, name=req.session_name)
     summary = print_human_summary(report)
-    report = analyze_profile(merged, req.api_key)
+    save_coaching_report(report, summary_text=summary)
     return {"report": report, "summary": summary}
 
 @app.get("/health")
