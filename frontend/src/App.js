@@ -13,7 +13,7 @@ function App() {
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
-        const res = await fetch('/questions');
+        const res = await fetch(`${process.env.REACT_APP_API_URL}/questions`);
         const data = await res.json();
         setQuestions(data);
         const emptyAnswers = Object.fromEntries(Object.keys(data).map(key => [key, '']));
@@ -35,7 +35,7 @@ function App() {
     formData.append('file', file);
 
     try {
-      const res = await fetch('/upload_resume', {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/upload_resume`, {
         method: 'POST',
         body: formData,
       });
@@ -55,7 +55,7 @@ function App() {
     setReport(null);
 
     try {
-      const res = await fetch('/analyze', {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/analyze`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
