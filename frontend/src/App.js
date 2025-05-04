@@ -7,6 +7,7 @@ function App() {
   const [qaAnswers, setQaAnswers] = useState({});
   const [loading, setLoading] = useState(false);
   const [summary, setSummary] = useState(null);
+  const [report, setReport] = useState(null);
   const [error, setError] = useState(null);
 
   // Load questions from backend on mount
@@ -16,7 +17,7 @@ function App() {
         const res = await fetch('/questions');
         const data = await res.json();
         setQuestions(data);
-        const emptyAnswers = Object.fromEntries(Object.keys(data).map(key => [key, ""]));
+        const emptyAnswers = Object.fromEntries(Object.keys(data).map(key => [key, '']));
         setQaAnswers(emptyAnswers);
       } catch (err) {
         setError('Failed to load questions');
@@ -30,6 +31,7 @@ function App() {
     if (!file) return;
     setLoading(true);
     setSummary(null);
+    setReport(null);
     setError(null);
 
     const formData = new FormData();
@@ -55,6 +57,7 @@ function App() {
     setLoading(true);
     setError(null);
     setSummary(null);
+    setReport(null);
 
     try {
       const res = await fetch('/analyze', {
@@ -63,14 +66,14 @@ function App() {
         body: JSON.stringify({
           resume: resumeData,
           qa: qaAnswers,
-          session_name: 'web_session',
-          api_key: process.env.REACT_APP_OPENAI_KEY || ''
+          session_name: 'web_session'
         })
       });
 
       if (!res.ok) throw new Error(`Analyze failed: ${res.status}`);
       const data = await res.json();
       setSummary(data.summary);
+      setReport(data.report);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -114,16 +117,43 @@ function App() {
       {/* Output */}
       {loading && <p>⏳ Working...</p>}
       {error && <p style={{ color: 'red' }}>❌ {error}</p>}
-      {summary && (
-        <div style={{ marginTop: '2rem', background: '#f0f0f0', padding: '1rem' }}>
+
+      {/* Report Summary */}
+      {report && (
+        <div style={{
+          background: '#f0f0f0',
+          padding: '1rem',
+          marginTop: '2rem',
+          borderRadius: '4px',
+          whiteSpace: 'pre-wrap',
+          wordWrap: 'break-word'
+        }}>
           <h2>🧾 Career Coaching Summary</h2>
-          <pre style={{
-            whiteSpace: 'pre-wrap',
-            wordWrap: 'break-word',
-            overflowX: 'auto'
-          }}>
-            {summary}
-          </pre>
+
+          <p><strong>Profile Type:</strong> {report.profile_type}</p>
+          <p><strong>Summary:</strong> {report.summary}</p>
+
+          <hr style={{ margin: '1rem 0' }} />
+
+          <h3>💪 Strengths</h3>
+          <ul>
+            {report.strengths?.map((item, i) => <li key={`strength-${i}`}>{item}</li>)}
+          </ul>
+
+          <h3>🛠 Gaps</h3>
+          <ul>
+            {report.gaps?.map((item, i) => <li key={`gap-${i}`}>{item}</li>)}
+          </ul>
+
+          <h3>🧭 Recommendations</h3>
+          <ul>
+            {report.recommendations?.map((item, i) => <li key={`rec-${i}`}>{item}</li>)}
+          </ul>
+
+          <h3>🎯 Suggested Roles</h3>
+          <ul>
+            {report.suggested_jobs?.map((item, i) => <li key={`job-${i}`}>{item}</li>)}
+          </ul>
         </div>
       )}
     </div>
