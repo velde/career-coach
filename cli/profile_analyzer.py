@@ -60,7 +60,13 @@ Your job is to:
 4. Suggest a list of suitable job titles and industries.
 5. Recommend personalized next steps.
 
-Return your response as a structured JSON object with keys: "profile_type", "summary", "strengths", "gaps", "recommendations", and "suggested_jobs".
+Return your response as a structured JSON object using these keys:
+- "profile_type": a one-word category (e.g. "Pivot", "Grow", "Reinvent")
+- "summary": a concise paragraph summarizing the candidate
+- "strengths": a list of natural-language strengths
+- "gaps": a list of skill or experience gaps
+- "recommendations": a list of specific, actionable next steps (not categories or labels)
+- "suggested_jobs": a list of actual job titles or roles
 
 Candidate Resume:
 {profile.get('raw_resume_text', '')}

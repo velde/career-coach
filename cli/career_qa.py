@@ -3,6 +3,7 @@ import json
 import os
 from datetime import datetime
 from openai import OpenAI
+from pathlib import Path
 
 SYSTEM_PROMPT = """
 You are an AI career coach. Analyze the user's responses about their career preferences, motivations, and skills.
@@ -21,14 +22,19 @@ Extract:
 Return your response as JSON.
 """
 
-questions = {
-    "motivations": "What motivates you most in your work?",
-    "ideal_role": "Describe your ideal role or responsibilities.",
-    "environment": "What kind of work environment or company culture do you prefer?",
-    "industries": "What industries are you most interested in or want to avoid?",
-    "skills": "What are your current strengths and what skills do you think you're missing?",
-    "openness": "Are you open to changing industries or job functions? Why or why not?"
-}
+def load_questions():
+    path = Path(__file__).parent.parent / "shared" / "questions.json"
+    with open(path, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+def collect_answers():
+    questions = load_questions()
+    answers = {}
+    for key, question in questions.items():
+        print(f"\n{question}")
+        answer = input("Your answer: ")
+        answers[key] = answer
+    return answers
 
 def collect_answers(interactive=True, predefined_answers=None):
     responses = {}
