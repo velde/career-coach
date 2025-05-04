@@ -27,7 +27,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:3000",
-        "https://career-coach.vercel.app",  # ✅ your actual Vercel frontend
+        "https://career-coach-alpha.vercel.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],
