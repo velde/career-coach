@@ -2,6 +2,7 @@
 __pycache__/
 *.pyc
 .DS_Store
+career-coach.code-workspace
 venv/
 # Prevent storing user data, PII
 resumes/
