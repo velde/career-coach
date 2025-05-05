@@ -9,7 +9,7 @@ body {
 /* Main container */
 .App {
   max-width: 480px;
-  margin: 0 auto;
+  margin: 1em auto;
   padding: 1rem;
   text-align: center;
 }
