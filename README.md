@@ -19,7 +19,7 @@
 
 ## 🚀 Live Demo
 
-🖥️ Try it now: [career-coach.vercel.app](https://career-coach.vercel.app)  
+🖥️ Try it now: [career-coach.vercel.app](https://career-coach-alpha.vercel.app)  
 📄 [Resume parsing and coaching powered by FastAPI on Render](https://career-coach-backend.onrender.com/health)
 
 > No personal data is stored — resume and answers are used only during the session.
