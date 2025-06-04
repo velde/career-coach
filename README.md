@@ -93,7 +93,8 @@ I wanted to explore how AI could support meaningful human decision-making in car
 - Allow exporting report to PDF
 - Support resume preview and anonymization
 - Add user login to save sessions
-- Use GPT-4 or fine-tuned models for deeper insight
+- Use fine-tuned models for deeper insight
+- 
 - Optional job market enrichment (e.g. LinkedIn or public APIs)
 
 ---
