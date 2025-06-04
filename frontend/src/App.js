@@ -57,10 +57,10 @@ function ResumeSummary({ resumeData, onResumeUpdate }) {
         padding: '1rem',
         background: '#f0f0f0',
         borderRadius: '4px',
-        border: '1px solid #dee2e6'
+        border: '2px solid #dee2e6'
       }}>
-        <p style={{ margin: 0 }}>
-          If you don't want to send personally identifiable information to OpenAI during the analysis of your resume, 
+        <p style={{ margin: 0, fontWeight: '500' }}>
+          <strong>NOTE:</strong> If you don't want to send personally identifiable information to OpenAI during the analysis of your resume, 
           you can select the text and right-click to redact it.
         </p>
       </div>
@@ -171,8 +171,12 @@ function App() {
     <div style={{ maxWidth: '800px', margin: '2rem auto', fontFamily: 'sans-serif' }}>
       <h1>🧠 Career Coach</h1>
       <p style={{ marginBottom: '1.5rem' }}>
-        This tool analyzes your resume and career reflections using GPT to provide tailored advice on your career direction,
-        strengths, skill gaps, and potential next steps. Upload your resume (PDF format only) and answer a few guided questions to receive a personalized coaching report.
+        This tool analyzes your resume and career reflections using OpenAI Chat Completions API to provide tailored advice on your career direction,
+        strengths, skill gaps, and potential next steps.
+      </p>
+
+      <p style={{ marginBottom: '1.5rem' }}>
+        Upload your resume (PDF format only) and answer a few guided questions to receive a personalized coaching report.
       </p>
 
       {/* Resume Upload */}
@@ -185,10 +189,7 @@ function App() {
 
       {/* Resume Summary */}
       {resumeData && (
-        <ResumeSummary 
-          resumeData={resumeData} 
-          onResumeUpdate={handleResumeUpdate}
-        />
+        <ResumeSummary resumeData={resumeData} onResumeUpdate={handleResumeUpdate} />
       )}
 
       {/* Q&A */}
@@ -211,7 +212,7 @@ function App() {
             </div>
           ))}
           <p style={{ fontStyle: 'italic', marginTop: '1rem' }}>
-            When you press the button below, your resume and reflections will be analyzed using GPT to generate a personalized coaching report.
+            When you press the button below, your resume and reflections will be analyzed using OpenAI Chat Completions API to generate a personalized coaching report.
           </p>
           <button onClick={handleAnalyze} disabled={loading}>
             Submit Answers & Analyze
