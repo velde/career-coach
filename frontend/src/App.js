@@ -3,133 +3,36 @@ import './App.css';
 
 // Resume Summary Component
 function ResumeSummary({ resumeData }) {
-  console.log('Resume Data received:', resumeData); // Debug log
-
-  // Early return if no data
-  if (!resumeData) {
+  if (!resumeData || !resumeData.raw_text) {
     return <div>No resume data available</div>;
   }
 
+  // Format the raw text by replacing newlines with line breaks
+  const formattedText = resumeData.raw_text
+    .split('\n')
+    .map((line, index) => (
+      <React.Fragment key={index}>
+        {line}
+        <br />
+      </React.Fragment>
+    ));
+
   return (
     <div style={{
-      background: '#f8f9fa',
-      padding: '1.5rem',
-      marginBottom: '2rem',
-      borderRadius: '8px',
-      border: '1px solid #dee2e6'
+      background: '#f0f0f0',
+      padding: '1rem',
+      marginTop: '2rem',
+      borderRadius: '4px',
+      whiteSpace: 'pre-wrap',
+      wordWrap: 'break-word'
     }}>
       <h2>Resume Summary</h2>
-      
-      <div style={{ whiteSpace: 'pre-wrap' }}>
-        {/* Contact Information */}
-        {resumeData.contact && (
-          <div style={{ marginBottom: '1.5rem' }}>
-            <h3 style={{ color: '#2c3e50', borderBottom: '2px solid #3498db', paddingBottom: '0.5rem' }}>
-              Contact Information
-            </h3>
-            <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: '0.5rem 1rem' }}>
-              {resumeData.contact.email && (
-                <>
-                  <span style={{ fontWeight: 'bold' }}>Email:</span>
-                  <span>{resumeData.contact.email}</span>
-                </>
-              )}
-              {resumeData.contact.phone && (
-                <>
-                  <span style={{ fontWeight: 'bold' }}>Phone:</span>
-                  <span>{resumeData.contact.phone}</span>
-                </>
-              )}
-              {resumeData.contact.address && (
-                <>
-                  <span style={{ fontWeight: 'bold' }}>Location:</span>
-                  <span>{resumeData.contact.address}</span>
-                </>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* Experience */}
-        {resumeData.experience && resumeData.experience.length > 0 && (
-          <div style={{ marginBottom: '1.5rem' }}>
-            <h3 style={{ color: '#2c3e50', borderBottom: '2px solid #3498db', paddingBottom: '0.5rem' }}>
-              Experience
-            </h3>
-            {resumeData.experience.map((exp, index) => (
-              <div key={index} style={{ marginBottom: '1rem', padding: '0.5rem' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                  <span style={{ fontWeight: 'bold', fontSize: '1.1em' }}>{exp.title}</span>
-                  <span style={{ color: '#666' }}>{exp.duration}</span>
-                </div>
-                <div style={{ color: '#2c3e50', marginBottom: '0.5rem' }}>{exp.company}</div>
-                {exp.highlights && exp.highlights.length > 0 && (
-                  <ul style={{ margin: '0.5rem 0', paddingLeft: '1.5rem' }}>
-                    {exp.highlights.map((highlight, i) => (
-                      <li key={i} style={{ marginBottom: '0.25rem' }}>{highlight}</li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Education */}
-        {resumeData.education && resumeData.education.length > 0 && (
-          <div style={{ marginBottom: '1.5rem' }}>
-            <h3 style={{ color: '#2c3e50', borderBottom: '2px solid #3498db', paddingBottom: '0.5rem' }}>
-              Education
-            </h3>
-            {resumeData.education.map((edu, index) => (
-              <div key={index} style={{ marginBottom: '1rem', padding: '0.5rem' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                  <span style={{ fontWeight: 'bold' }}>{edu.degree}</span>
-                  <span style={{ color: '#666' }}>{edu.duration}</span>
-                </div>
-                <div style={{ color: '#2c3e50' }}>{edu.institution}</div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Skills */}
-        {resumeData.skills && resumeData.skills.length > 0 && (
-          <div>
-            <h3 style={{ color: '#2c3e50', borderBottom: '2px solid #3498db', paddingBottom: '0.5rem' }}>
-              Skills
-            </h3>
-            <div style={{ 
-              display: 'flex', 
-              flexWrap: 'wrap', 
-              gap: '0.5rem',
-              padding: '0.5rem'
-            }}>
-              {resumeData.skills.map((skill, index) => (
-                <span 
-                  key={index}
-                  style={{
-                    background: '#e9ecef',
-                    padding: '0.25rem 0.75rem',
-                    borderRadius: '15px',
-                    fontSize: '0.9em',
-                    color: '#495057'
-                  }}
-                >
-                  {skill}
-                </span>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Debug Information */}
-        <div style={{ marginTop: '2rem', padding: '1rem', background: '#f0f0f0', borderRadius: '4px' }}>
-          <h4>Debug Information</h4>
-          <pre style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>
-            {JSON.stringify(resumeData, null, 2)}
-          </pre>
-        </div>
+      <div style={{
+        fontFamily: 'sans-serif',
+        lineHeight: '1.5',
+        padding: '0.5rem 0'
+      }}>
+        {formattedText}
       </div>
     </div>
   );
