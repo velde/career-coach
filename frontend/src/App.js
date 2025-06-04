@@ -3,12 +3,28 @@ import './App.css';
 
 // Resume Summary Component
 function ResumeSummary({ resumeData }) {
+  const [text, setText] = useState(resumeData?.raw_text || '');
+  const [selectedText, setSelectedText] = useState('');
+
   if (!resumeData || !resumeData.raw_text) {
     return <div>No resume data available</div>;
   }
 
-  // Format the raw text by replacing newlines with line breaks
-  const formattedText = resumeData.raw_text
+  const handleContextMenu = (e) => {
+    e.preventDefault(); // Prevent default context menu
+    const selection = window.getSelection();
+    const selectedText = selection.toString();
+    
+    if (selectedText) {
+      // Replace the selected text with [REDACTED]
+      const newText = text.replace(selectedText, '[REDACTED]');
+      setText(newText);
+      setSelectedText(''); // Clear selection
+    }
+  };
+
+  // Format the text by replacing newlines with line breaks
+  const formattedText = text
     .split('\n')
     .map((line, index) => (
       <React.Fragment key={index}>
@@ -27,11 +43,30 @@ function ResumeSummary({ resumeData }) {
       wordWrap: 'break-word'
     }}>
       <h2>Resume Summary</h2>
-      <div style={{
-        fontFamily: 'sans-serif',
-        lineHeight: '1.5',
-        padding: '0.5rem 0'
+      
+      <div style={{ 
+        marginBottom: '1rem',
+        padding: '0.5rem',
+        background: '#fff',
+        borderRadius: '4px',
+        border: '1px solid #dee2e6'
       }}>
+        <p style={{ margin: 0 }}>
+          Below is a simplified summary of the resume. You can redact any PPI (personally identifiable information) 
+          by selecting the text you want to redact and right-clicking the selected text.
+        </p>
+      </div>
+
+      <div 
+        style={{
+          fontFamily: 'sans-serif',
+          lineHeight: '1.5',
+          padding: '0.5rem 0',
+          userSelect: 'text', // Ensure text is selectable
+          cursor: 'text'
+        }}
+        onContextMenu={handleContextMenu}
+      >
         {formattedText}
       </div>
     </div>
