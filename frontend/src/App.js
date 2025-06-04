@@ -54,14 +54,14 @@ function ResumeSummary({ resumeData, onResumeUpdate }) {
       
       <div style={{ 
         marginBottom: '1rem',
-        padding: '0.5rem',
-        background: '#fff',
+        padding: '1rem',
+        background: '#f0f0f0',
         borderRadius: '4px',
         border: '1px solid #dee2e6'
       }}>
         <p style={{ margin: 0 }}>
-          Below is a simplified summary of the resume. You can redact any PPI (personally identifiable information) 
-          by selecting the text you want to redact and right-clicking the selected text.
+          If you don't want to send personally identifiable information to OpenAI during the analysis of your resume, 
+          you can select the text and right-click to redact it.
         </p>
       </div>
 
@@ -70,7 +70,7 @@ function ResumeSummary({ resumeData, onResumeUpdate }) {
           fontFamily: 'sans-serif',
           lineHeight: '1.5',
           padding: '0.5rem 0',
-          userSelect: 'text', // Ensure text is selectable
+          userSelect: 'text',
           cursor: 'text'
         }}
         onContextMenu={handleContextMenu}
