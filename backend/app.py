@@ -10,6 +10,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "cli"))
 from resume_parser import extract_text_from_pdf, parse_resume, save_parsed_resume
 from career_qa      import collect_answers, load_answers_from_file
 from profile_analyzer import merge_profile, analyze_profile, print_human_summary, save_coaching_report
+from job_matcher import find_matching_jobs
 
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -20,6 +21,10 @@ class AnalyzeRequest(BaseModel):
     resume: dict
     qa: dict
     session_name: str = "web_session"
+
+class JobMatchRequest(BaseModel):
+    coaching_summary: dict
+    num_jobs: int = 5
 
 app = FastAPI()
 # Add CORS middleware immediately after app creation
@@ -71,6 +76,14 @@ def analyze(req: AnalyzeRequest):
     summary = print_human_summary(report)
     save_coaching_report(report, summary_text=summary)
     return {"report": report, "summary": summary}
+
+@app.post("/find_jobs")
+def find_jobs(req: JobMatchRequest):
+    try:
+        jobs = find_matching_jobs(req.coaching_summary, req.num_jobs)
+        return {"jobs": jobs}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/health")
 def health_check():

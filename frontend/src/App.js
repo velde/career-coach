@@ -89,6 +89,8 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [report, setReport] = useState(null);
   const [error, setError] = useState(null);
+  const [matchingJobs, setMatchingJobs] = useState(null);
+  const [loadingJobs, setLoadingJobs] = useState(false);
 
   // Load questions on mount
   useEffect(() => {
@@ -138,6 +140,7 @@ function App() {
     setLoading(true);
     setError(null);
     setReport(null);
+    setMatchingJobs(null);
 
     try {
       console.time('Analysis');
@@ -155,6 +158,28 @@ function App() {
       const data = await res.json();
       console.timeEnd('Analysis');
       setReport(data.report);
+
+      // After getting the coaching summary, find matching jobs
+      setLoadingJobs(true);
+      try {
+        const jobsRes = await fetch(`${process.env.REACT_APP_API_URL}/find_jobs`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            coaching_summary: data.report,
+            num_jobs: 5
+          })
+        });
+
+        if (!jobsRes.ok) throw new Error(`Job search failed: ${jobsRes.status}`);
+        const jobsData = await jobsRes.json();
+        setMatchingJobs(jobsData.jobs);
+      } catch (err) {
+        console.error('Job search error:', err);
+        // Don't set error state here to avoid hiding the coaching summary
+      } finally {
+        setLoadingJobs(false);
+      }
     } catch (err) {
       console.error('Analysis error:', err);
       setError(err.message);
@@ -189,7 +214,62 @@ function App() {
 
       {/* Resume Summary */}
       {resumeData && (
-        <ResumeSummary resumeData={resumeData} onResumeUpdate={handleResumeUpdate} />
+        <>
+          <ResumeSummary 
+            resumeData={resumeData} 
+            onResumeUpdate={handleResumeUpdate}
+          />
+          
+          {/* Job Matching Section */}
+          <div style={{ marginTop: '2rem' }}>
+            <h2>Matching Job Opportunities</h2>
+            {loadingJobs ? (
+              <p>Finding matching jobs...</p>
+            ) : matchingJobs ? (
+              <div style={{ marginTop: '1rem' }}>
+                {matchingJobs.map((job, index) => (
+                  <div 
+                    key={index}
+                    style={{
+                      background: 'white',
+                      padding: '1rem',
+                      marginBottom: '1rem',
+                      borderRadius: '4px',
+                      border: '1px solid #dee2e6'
+                    }}
+                  >
+                    <h3 style={{ margin: '0 0 0.5rem 0' }}>{job.job_title}</h3>
+                    <p style={{ margin: '0 0 0.5rem 0' }}>{job.job_description}</p>
+                    
+                    <div style={{ marginTop: '0.5rem' }}>
+                      <strong>Why This Job Matches:</strong>
+                      <p style={{ margin: '0.5rem 0' }}>{job.match_reasons}</p>
+                    </div>
+
+                    <div style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem' }}>
+                      <div style={{ flex: 1 }}>
+                        <strong>Your Matching Skills:</strong>
+                        <ul style={{ margin: '0.5rem 0' }}>
+                          {job.matching_skills.map((skill, i) => (
+                            <li key={i}>{skill}</li>
+                          ))}
+                        </ul>
+                      </div>
+                      <div style={{ flex: 1 }}>
+                        <strong>Skills to Develop:</strong>
+                        <ul style={{ margin: '0.5rem 0' }}>
+                          {job.skills_to_develop.map((skill, i) => (
+                            <li key={i}>{skill}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : null}
+          </div>
+        </>
       )}
 
       {/* Q&A */}
