@@ -3,6 +3,13 @@ import './App.css';
 
 // Resume Summary Component
 function ResumeSummary({ resumeData }) {
+  console.log('Resume Data received:', resumeData); // Debug log
+
+  // Early return if no data
+  if (!resumeData) {
+    return <div>No resume data available</div>;
+  }
+
   return (
     <div style={{
       background: '#f8f9fa',
@@ -115,6 +122,14 @@ function ResumeSummary({ resumeData }) {
             </div>
           </div>
         )}
+
+        {/* Debug Information */}
+        <div style={{ marginTop: '2rem', padding: '1rem', background: '#f0f0f0', borderRadius: '4px' }}>
+          <h4>Debug Information</h4>
+          <pre style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>
+            {JSON.stringify(resumeData, null, 2)}
+          </pre>
+        </div>
       </div>
     </div>
   );
@@ -161,8 +176,10 @@ function App() {
       });
       if (!res.ok) throw new Error(`Upload failed: ${res.status}`);
       const data = await res.json();
+      console.log('Upload response:', data); // Debug log
       setResumeData(data);
     } catch (err) {
+      console.error('Upload error:', err); // Debug log
       setError(err.message);
     } finally {
       setLoading(false);
