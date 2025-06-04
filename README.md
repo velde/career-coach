@@ -1,14 +1,15 @@
 # 🧠 Career Coach
 
-**Career Coach** is a GPT-powered career reflection tool that helps job seekers gain insight into their strengths, gaps, and potential next steps. It analyzes your resume and self-reflection responses to generate a personalized career coaching report — just like working with a career consultant, but automated and scalable.
+**Career Coach** is an AI-powered career reflection tool that helps job seekers gain insight into their strengths, gaps, and potential next steps. It analyzes your resume and self-reflection responses to generate a personalized career coaching report — just like working with a career consultant, but automated and scalable.
 
 ---
 
 ## ✨ What It Does
 
 - Upload your **PDF resume**
+- **Redact PII (Personally Identifiable Information)** by selecting text and right-clicking - redacted text is completely removed before analysis
 - Answer 6 personalized **career reflection questions**
-- Receive a GPT-generated **coaching report** including:
+- Receive an AI-generated **coaching report** including:
   - Career direction (Pivot, Grow, Reinvent)
   - Key strengths and skills
   - Gaps and improvement areas
@@ -32,7 +33,7 @@
 |-------------|---------------------------------------------|
 | Frontend    | React, Fetch API, Vercel                   |
 | Backend     | FastAPI, OpenAI API, pdfplumber, Render    |
-| AI/LLM      | GPT-4 (OpenAI Chat Completions API)      |
+| AI/LLM      | OpenAI Chat Completions API               |
 | Deployment  | Vercel (frontend), Render (backend)        |
 | File Parsing| `pdfplumber`, `pypdfium2`                  |
 | Prompt Logic| Custom GPT prompt with structured JSON reply |
@@ -49,11 +50,12 @@
 [ Render Backend (FastAPI) ]
         ├─ /upload_resume → parse PDF with pdfplumber
         ├─ /questions → loads shared JSON questions
-        ├─ /analyze → merges resume + answers, calls GPT
+        ├─ /analyze → merges resume + answers, calls OpenAI API
 ```
 
 - Shared logic (resume parsing, prompt formatting) is used by both CLI and backend
 - All user input is processed in-memory; nothing is stored long-term
+- PII redaction happens client-side before analysis to ensure privacy
 
 ---
 
@@ -91,10 +93,8 @@ I wanted to explore how AI could support meaningful human decision-making in car
 ## 💡 Future Improvements
 
 - Allow exporting report to PDF
-- Support resume preview and anonymization
 - Add user login to save sessions
 - Use fine-tuned models for deeper insight
-- 
 - Optional job market enrichment (e.g. LinkedIn or public APIs)
 
 ---
