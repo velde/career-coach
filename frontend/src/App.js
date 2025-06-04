@@ -157,11 +157,13 @@ function App() {
       if (!res.ok) throw new Error(`Analyze failed: ${res.status}`);
       const data = await res.json();
       console.timeEnd('Analysis');
+      console.log('Analysis response:', data);
       setReport(data.report);
 
       // After getting the coaching summary, find matching jobs
       setLoadingJobs(true);
       try {
+        console.log('Fetching matching jobs...');
         const jobsRes = await fetch(`${process.env.REACT_APP_API_URL}/find_jobs`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -171,8 +173,12 @@ function App() {
           })
         });
 
-        if (!jobsRes.ok) throw new Error(`Job search failed: ${jobsRes.status}`);
+        if (!jobsRes.ok) {
+          console.error('Job search failed:', jobsRes.status);
+          throw new Error(`Job search failed: ${jobsRes.status}`);
+        }
         const jobsData = await jobsRes.json();
+        console.log('Jobs response:', jobsData);
         setMatchingJobs(jobsData.jobs);
       } catch (err) {
         console.error('Job search error:', err);
@@ -250,17 +256,17 @@ function App() {
                       <div style={{ flex: 1 }}>
                         <strong>Your Matching Skills:</strong>
                         <ul style={{ margin: '0.5rem 0' }}>
-                          {job.matching_skills.map((skill, i) => (
+                          {Array.isArray(job.matching_skills) ? job.matching_skills.map((skill, i) => (
                             <li key={i}>{skill}</li>
-                          ))}
+                          )) : <li>No matching skills listed</li>}
                         </ul>
                       </div>
                       <div style={{ flex: 1 }}>
                         <strong>Skills to Develop:</strong>
                         <ul style={{ margin: '0.5rem 0' }}>
-                          {job.skills_to_develop.map((skill, i) => (
+                          {Array.isArray(job.skills_to_develop) ? job.skills_to_develop.map((skill, i) => (
                             <li key={i}>{skill}</li>
-                          ))}
+                          )) : <li>No skills to develop listed</li>}
                         </ul>
                       </div>
                     </div>
@@ -340,6 +346,56 @@ function App() {
           <ul>
             {report.suggested_jobs?.map((item, i) => <li key={`job-${i}`}>{item}</li>)}
           </ul>
+
+          {/* Job Matching Section */}
+          <div style={{ marginTop: '2rem' }}>
+            <h2>Matching Job Opportunities</h2>
+            {loadingJobs ? (
+              <p>Finding matching jobs...</p>
+            ) : matchingJobs ? (
+              <div style={{ marginTop: '1rem' }}>
+                {matchingJobs.map((job, index) => (
+                  <div 
+                    key={index}
+                    style={{
+                      background: 'white',
+                      padding: '1rem',
+                      marginBottom: '1rem',
+                      borderRadius: '4px',
+                      border: '1px solid #dee2e6'
+                    }}
+                  >
+                    <h3 style={{ margin: '0 0 0.5rem 0' }}>{job.job_title}</h3>
+                    <p style={{ margin: '0 0 0.5rem 0' }}>{job.job_description}</p>
+                    
+                    <div style={{ marginTop: '0.5rem' }}>
+                      <strong>Why This Job Matches:</strong>
+                      <p style={{ margin: '0.5rem 0' }}>{job.match_reasons}</p>
+                    </div>
+
+                    <div style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem' }}>
+                      <div style={{ flex: 1 }}>
+                        <strong>Your Matching Skills:</strong>
+                        <ul style={{ margin: '0.5rem 0' }}>
+                          {Array.isArray(job.matching_skills) ? job.matching_skills.map((skill, i) => (
+                            <li key={i}>{skill}</li>
+                          )) : <li>No matching skills listed</li>}
+                        </ul>
+                      </div>
+                      <div style={{ flex: 1 }}>
+                        <strong>Skills to Develop:</strong>
+                        <ul style={{ margin: '0.5rem 0' }}>
+                          {Array.isArray(job.skills_to_develop) ? job.skills_to_develop.map((skill, i) => (
+                            <li key={i}>{skill}</li>
+                          )) : <li>No skills to develop listed</li>}
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : null}
+          </div>
         </div>
       )}
     </div>
