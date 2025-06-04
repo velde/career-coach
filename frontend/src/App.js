@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 
 // Resume Summary Component
-function ResumeSummary({ resumeData }) {
+function ResumeSummary({ resumeData, onResumeUpdate }) {
   const [text, setText] = useState(resumeData?.raw_text || '');
   const [selectedText, setSelectedText] = useState('');
 
@@ -19,6 +19,14 @@ function ResumeSummary({ resumeData }) {
       // Replace the selected text with [REDACTED]
       const newText = text.replace(selectedText, '[REDACTED]');
       setText(newText);
+      
+      // Update the parent's resumeData with the redacted text
+      const updatedResumeData = {
+        ...resumeData,
+        raw_text: newText
+      };
+      onResumeUpdate(updatedResumeData);
+      
       setSelectedText(''); // Clear selection
     }
   };
@@ -108,16 +116,18 @@ function App() {
     formData.append('file', file);
 
     try {
+      console.time('Resume Upload');
       const res = await fetch(`${process.env.REACT_APP_API_URL}/upload_resume`, {
         method: 'POST',
         body: formData,
       });
       if (!res.ok) throw new Error(`Upload failed: ${res.status}`);
       const data = await res.json();
-      console.log('Upload response:', data); // Debug log
+      console.timeEnd('Resume Upload');
+      console.log('Upload response:', data);
       setResumeData(data);
     } catch (err) {
-      console.error('Upload error:', err); // Debug log
+      console.error('Upload error:', err);
       setError(err.message);
     } finally {
       setLoading(false);
@@ -130,6 +140,7 @@ function App() {
     setReport(null);
 
     try {
+      console.time('Analysis');
       const res = await fetch(`${process.env.REACT_APP_API_URL}/analyze`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -142,12 +153,18 @@ function App() {
 
       if (!res.ok) throw new Error(`Analyze failed: ${res.status}`);
       const data = await res.json();
+      console.timeEnd('Analysis');
       setReport(data.report);
     } catch (err) {
+      console.error('Analysis error:', err);
       setError(err.message);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleResumeUpdate = (updatedResumeData) => {
+    setResumeData(updatedResumeData);
   };
 
   return (
@@ -168,7 +185,10 @@ function App() {
 
       {/* Resume Summary */}
       {resumeData && (
-        <ResumeSummary resumeData={resumeData} />
+        <ResumeSummary 
+          resumeData={resumeData} 
+          onResumeUpdate={handleResumeUpdate}
+        />
       )}
 
       {/* Q&A */}
