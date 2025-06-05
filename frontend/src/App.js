@@ -4,7 +4,6 @@ import './App.css';
 // Resume Summary Component
 function ResumeSummary({ resumeData, onResumeUpdate }) {
   const [text, setText] = useState(resumeData?.raw_text || '');
-  const [selectedText, setSelectedText] = useState('');
 
   if (!resumeData || !resumeData.raw_text) {
     return <div>No resume data available</div>;
@@ -26,8 +25,6 @@ function ResumeSummary({ resumeData, onResumeUpdate }) {
         raw_text: newText
       };
       onResumeUpdate(updatedResumeData);
-      
-      setSelectedText(''); // Clear selection
     }
   };
 
