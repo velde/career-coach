@@ -234,12 +234,19 @@ function App() {
 
       {/* Resume Upload */}
       <div style={{ marginBottom: '1rem' }}>
-        <input 
-          type="file" 
-          accept=".pdf" 
-          onChange={handleFileChange}
-          key={file ? file.name : 'no-file'} // Force re-render of input when file changes
-        />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <input 
+            type="file" 
+            accept=".pdf" 
+            onChange={handleFileChange}
+            style={{ flex: 1 }}
+          />
+          {file && (
+            <span style={{ color: '#666' }}>
+              Selected: {file.name}
+            </span>
+          )}
+        </div>
         {loading && <span style={{ marginLeft: '1rem' }}>⏳ Processing resume...</span>}
         {error && <p style={{ color: 'red', marginTop: '0.5rem' }}>❌ {error}</p>}
       </div>

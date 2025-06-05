@@ -3,9 +3,6 @@ import os
 import json
 from datetime import datetime
 
-RESUME_DIR = "resumes"
-os.makedirs(RESUME_DIR, exist_ok=True)
-
 def extract_text_from_pdf(pdf_path):
     text = ""
     with pdfplumber.open(pdf_path) as pdf:
@@ -29,19 +26,9 @@ def parse_resume(text):
         "raw_text_preview": text[:1000] + "..."
     }
 
-def save_parsed_resume(data):
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    filename = os.path.join(RESUME_DIR, f"resume_{timestamp}.json")
-    with open(filename, "w") as f:
-        json.dump(data, f, indent=2)
-    print(f"\n✅ Resume parsed and saved to {filename}")
-
 def parse_pdf_resume(pdf_path):
-    print(f"\n📄 Parsing resume: {pdf_path}")
     text = extract_text_from_pdf(pdf_path)
-    parsed_data = parse_resume(text)
-    save_parsed_resume(parsed_data)
-    return parsed_data
+    return parse_resume(text)
 
 if __name__ == "__main__":
     path = input("Enter path to resume PDF: ").strip()
