@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './App.css';
 
 // Resume Summary Component
@@ -105,14 +105,7 @@ function App() {
     fetchQuestions();
   }, []);
 
-  // Automatically parse resume when file is selected
-  useEffect(() => {
-    if (file) {
-      handleUpload();
-    }
-  }, [file]);
-
-  const handleUpload = async () => {
+  const handleUpload = useCallback(async () => {
     if (!file) return;
     setLoading(true);
     setReport(null);
@@ -138,7 +131,14 @@ function App() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [file]);
+
+  // Automatically parse resume when file is selected
+  useEffect(() => {
+    if (file) {
+      handleUpload();
+    }
+  }, [file, handleUpload]);
 
   const handleAnalyze = async () => {
     setLoading(true);
