@@ -105,6 +105,13 @@ function App() {
     fetchQuestions();
   }, []);
 
+  // Automatically parse resume when file is selected
+  useEffect(() => {
+    if (file) {
+      handleUpload();
+    }
+  }, [file]);
+
   const handleUpload = async () => {
     if (!file) return;
     setLoading(true);
@@ -199,20 +206,20 @@ function App() {
     <div style={{ maxWidth: '800px', margin: '2rem auto', fontFamily: 'sans-serif' }}>
       <h1>🧠 Career Coach</h1>
       <p style={{ marginBottom: '1.5rem' }}>
-        This tool analyzes your resume and career reflections using OpenAI Chat Completions API to provide tailored advice on your career direction,
-        strengths, skill gaps, and potential next steps.
+        This tool helps you explore your career path by analyzing your resume and career reflections. 
+        It provides personalized coaching advice and matches you with relevant job opportunities that align with your skills, 
+        experience, and career goals.
       </p>
 
       <p style={{ marginBottom: '1.5rem' }}>
-        Upload your resume (PDF format only) and answer a few guided questions to receive a personalized coaching report.
+        Start by uploading your resume (PDF format only). You can redact any sensitive information before proceeding. 
+        Then, answer a few guided questions to help us understand your career aspirations better.
       </p>
 
       {/* Resume Upload */}
       <div style={{ marginBottom: '1rem' }}>
         <input type="file" accept=".pdf" onChange={e => setFile(e.target.files[0])} />
-        <button onClick={handleUpload} disabled={!file || loading} style={{ marginLeft: '1rem' }}>
-          Upload Resume
-        </button>
+        {loading && <span style={{ marginLeft: '1rem' }}>⏳ Processing resume...</span>}
       </div>
 
       {/* Resume Summary */}
@@ -227,7 +234,7 @@ function App() {
           <div>
             <h2>Career Reflection Questions</h2>
             <p style={{ marginBottom: '1rem' }}>
-              These questions help uncover your motivations, preferences, and openness to change.
+              These questions help us understand your motivations, preferences, and career goals.
               Be honest and specific — the more thoughtful your answers, the more accurate and useful your career coaching summary will be.
             </p>
             {Object.entries(questions).map(([key, question]) => (
@@ -242,17 +249,17 @@ function App() {
               </div>
             ))}
             <p style={{ fontStyle: 'italic', marginTop: '1rem' }}>
-              When you press the button below, your resume and reflections will be analyzed using OpenAI Chat Completions API to generate a personalized coaching report.
+              When you're ready, click the button below to analyze your resume and reflections. 
+              You'll receive a personalized coaching summary and matching job opportunities.
             </p>
             <button onClick={handleAnalyze} disabled={loading}>
-              Submit Answers & Analyze
+              Submit & Analyze
             </button>
           </div>
         </>
       )}
 
       {/* Output */}
-      {loading && <p>⏳ Working...</p>}
       {error && <p style={{ color: 'red' }}>❌ {error}</p>}
 
       {/* Report Summary */}
