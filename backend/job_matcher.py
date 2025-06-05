@@ -3,13 +3,20 @@ from openai import OpenAI
 from typing import List, Dict
 import json
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+# Initialize OpenAI client only if API key is available
+client = None
+if os.getenv("OPENAI_API_KEY"):
+    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 def find_matching_jobs(coaching_summary: Dict, num_jobs: int = 5) -> List[Dict]:
     """
     Use OpenAI to find matching jobs based on the career coaching summary.
     Returns a list of job matches with titles, descriptions, and match reasons.
     """
+    if not client:
+        print("OpenAI client not initialized - API key not found")
+        return []
+
     system_prompt = """You are a job matching expert. Your task is to find relevant job opportunities 
     based on the candidate's career coaching summary. For each job, provide:
     1. A realistic job title
