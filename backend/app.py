@@ -2,6 +2,7 @@ import sys
 from pathlib import Path
 from pydantic import BaseModel
 import json
+import os
 
 # allow imports from ../cli
 sys.path.insert(0, str(Path(__file__).parent.parent / "cli"))
@@ -44,15 +45,30 @@ app.add_middleware(
 async def upload_resume(file: UploadFile = File(...)):
     if not file.filename.lower().endswith('.pdf'):
         raise HTTPException(status_code=400, detail="Only PDF files are supported.")
-    # Save upload to temp file
-    with NamedTemporaryFile(delete=False, suffix='.pdf') as tmp:
-        shutil.copyfileobj(file.file, tmp)
-        tmp_path = tmp.name
+    
+    tmp_path = None
+    try:
+        # Save upload to temp file
+        with NamedTemporaryFile(delete=False, suffix='.pdf') as tmp:
+            shutil.copyfileobj(file.file, tmp)
+            tmp_path = tmp.name
 
-    # Parse resume
-    text = extract_text_from_pdf(tmp_path)
-    parsed = parse_resume(text)
-    return parsed
+        # Ensure file handle is closed
+        await file.close()
+
+        # Parse resume
+        text = extract_text_from_pdf(tmp_path)
+        parsed = parse_resume(text)
+        return parsed
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to process resume: {str(e)}")
+    finally:
+        # Clean up temp file
+        if tmp_path and os.path.exists(tmp_path):
+            try:
+                os.unlink(tmp_path)
+            except Exception as e:
+                print(f"Warning: Failed to delete temp file {tmp_path}: {e}")
 
 @app.post("/start_qa")
 def start_qa(session_name: str = None):
