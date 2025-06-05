@@ -8,7 +8,7 @@ import os
 sys.path.insert(0, str(Path(__file__).parent.parent / "cli"))
 
 # Import your existing modules
-from resume_parser import extract_text_from_pdf, parse_resume, save_parsed_resume
+from resume_parser import extract_text_from_pdf, parse_resume
 from career_qa      import collect_answers, load_answers_from_file
 from profile_analyzer import merge_profile, analyze_profile, print_human_summary, save_coaching_report
 from job_matcher import find_matching_jobs
