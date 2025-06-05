@@ -89,30 +89,6 @@ function App() {
   const [matchingJobs, setMatchingJobs] = useState(null);
   const [loadingJobs, setLoadingJobs] = useState(false);
 
-  // Load questions on mount
-  useEffect(() => {
-    const fetchQuestions = async () => {
-      try {
-        const res = await fetch(`${process.env.REACT_APP_API_URL}/questions`);
-        const data = await res.json();
-        setQuestions(data);
-        const emptyAnswers = Object.fromEntries(Object.keys(data).map(key => [key, '']));
-        setQaAnswers(emptyAnswers);
-      } catch (err) {
-        setError('Failed to load questions');
-      }
-    };
-    fetchQuestions();
-  }, []);
-
-  // Automatically parse resume when file is selected
-  useEffect(() => {
-    if (file) {
-      console.log('File selected:', file.name);
-      handleUpload();
-    }
-  }, [file, handleUpload]);
-
   const handleUpload = useCallback(async () => {
     if (!file) return;
     setLoading(true);
@@ -147,6 +123,30 @@ function App() {
       setLoading(false);
     }
   }, [file]);
+
+  // Load questions on mount
+  useEffect(() => {
+    const fetchQuestions = async () => {
+      try {
+        const res = await fetch(`${process.env.REACT_APP_API_URL}/questions`);
+        const data = await res.json();
+        setQuestions(data);
+        const emptyAnswers = Object.fromEntries(Object.keys(data).map(key => [key, '']));
+        setQaAnswers(emptyAnswers);
+      } catch (err) {
+        setError('Failed to load questions');
+      }
+    };
+    fetchQuestions();
+  }, []);
+
+  // Automatically parse resume when file is selected
+  useEffect(() => {
+    if (file) {
+      console.log('File selected:', file.name);
+      handleUpload();
+    }
+  }, [file, handleUpload]);
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
