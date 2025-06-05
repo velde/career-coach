@@ -105,6 +105,14 @@ function App() {
     fetchQuestions();
   }, []);
 
+  // Automatically parse resume when file is selected
+  useEffect(() => {
+    if (file) {
+      console.log('File selected:', file.name);
+      handleUpload();
+    }
+  }, [file, handleUpload]);
+
   const handleUpload = useCallback(async () => {
     if (!file) return;
     setLoading(true);
@@ -116,29 +124,37 @@ function App() {
 
     try {
       console.time('Resume Upload');
+      console.log('Starting resume upload...');
       const res = await fetch(`${process.env.REACT_APP_API_URL}/upload_resume`, {
         method: 'POST',
         body: formData,
       });
-      if (!res.ok) throw new Error(`Upload failed: ${res.status}`);
+      
+      if (!res.ok) {
+        const errorText = await res.text();
+        console.error('Upload failed with status:', res.status, 'Response:', errorText);
+        throw new Error(`Upload failed: ${res.status} - ${errorText}`);
+      }
+      
       const data = await res.json();
       console.timeEnd('Resume Upload');
       console.log('Upload response:', data);
       setResumeData(data);
     } catch (err) {
       console.error('Upload error:', err);
-      setError(err.message);
+      setError(err.message || 'Failed to upload resume. Please try again.');
     } finally {
       setLoading(false);
     }
   }, [file]);
 
-  // Automatically parse resume when file is selected
-  useEffect(() => {
-    if (file) {
-      handleUpload();
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      console.log('New file selected:', selectedFile.name);
+      setFile(selectedFile);
     }
-  }, [file, handleUpload]);
+  };
 
   const handleAnalyze = async () => {
     setLoading(true);
@@ -218,8 +234,14 @@ function App() {
 
       {/* Resume Upload */}
       <div style={{ marginBottom: '1rem' }}>
-        <input type="file" accept=".pdf" onChange={e => setFile(e.target.files[0])} />
+        <input 
+          type="file" 
+          accept=".pdf" 
+          onChange={handleFileChange}
+          key={file ? file.name : 'no-file'} // Force re-render of input when file changes
+        />
         {loading && <span style={{ marginLeft: '1rem' }}>⏳ Processing resume...</span>}
+        {error && <p style={{ color: 'red', marginTop: '0.5rem' }}>❌ {error}</p>}
       </div>
 
       {/* Resume Summary */}
