@@ -25,7 +25,9 @@ def find_matching_jobs(coaching_summary: Dict, num_jobs: int = 5) -> List[Dict]:
     - Areas for growth
     
     Be specific and realistic in your job suggestions, considering the candidate's current level
-    and potential for growth in their chosen direction."""
+    and potential for growth in their chosen direction.
+    
+    IMPORTANT: Your response must be a valid JSON object with a "jobs" array containing the job matches."""
 
     # Extract relevant information from the coaching summary
     profile_type = coaching_summary.get('profile_type', '')
@@ -62,8 +64,21 @@ def find_matching_jobs(coaching_summary: Dict, num_jobs: int = 5) -> List[Dict]:
     4. Matching Skills (from their strengths)
     5. Skills to Develop (based on their gaps and recommendations)
     
-    Format the response as a JSON array of job objects."""
+    Format the response as a JSON object with a "jobs" array containing the job matches.
+    Example format:
+    {{
+      "jobs": [
+        {{
+          "Job Title": "Example Job",
+          "Job Description": "Description here",
+          "Match Reasons": "Reasons here",
+          "Matching Skills": ["Skill 1", "Skill 2"],
+          "Skills to Develop": ["Skill 3", "Skill 4"]
+        }}
+      ]
+    }}"""
 
+    print("Sending request to OpenAI...")
     response = client.chat.completions.create(
         model="gpt-4-turbo-preview",
         messages=[
@@ -74,10 +89,22 @@ def find_matching_jobs(coaching_summary: Dict, num_jobs: int = 5) -> List[Dict]:
     )
 
     try:
-        jobs = json.loads(response.choices[0].message.content)
-        return jobs.get('jobs', [])
-    except json.JSONDecodeError:
-        return [{
-            "error": "Failed to parse job matches",
-            "raw_response": response.choices[0].message.content
-        }] 
+        print("Received response from OpenAI")
+        content = response.choices[0].message.content
+        print("Response content:", content)
+        jobs = json.loads(content)
+        if not isinstance(jobs, dict) or 'jobs' not in jobs:
+            print("Invalid response format - missing 'jobs' key")
+            return []
+        if not isinstance(jobs['jobs'], list):
+            print("Invalid response format - 'jobs' is not a list")
+            return []
+        print(f"Found {len(jobs['jobs'])} job matches")
+        return jobs['jobs']
+    except json.JSONDecodeError as e:
+        print("Failed to parse JSON response:", e)
+        print("Raw response:", response.choices[0].message.content)
+        return []
+    except Exception as e:
+        print("Unexpected error:", e)
+        return [] 
