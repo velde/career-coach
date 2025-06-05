@@ -244,19 +244,19 @@ function App() {
                       border: '1px solid #dee2e6'
                     }}
                   >
-                    <h3 style={{ margin: '0 0 0.5rem 0' }}>{job.job_title}</h3>
-                    <p style={{ margin: '0 0 0.5rem 0' }}>{job.job_description}</p>
+                    <h3 style={{ margin: '0 0 0.5rem 0' }}>{job['Job Title']}</h3>
+                    <p style={{ margin: '0 0 0.5rem 0' }}>{job['Job Description']}</p>
                     
                     <div style={{ marginTop: '0.5rem' }}>
                       <strong>Why This Job Matches:</strong>
-                      <p style={{ margin: '0.5rem 0' }}>{job.match_reasons}</p>
+                      <p style={{ margin: '0.5rem 0' }}>{job['Match Reasons']}</p>
                     </div>
 
                     <div style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem' }}>
                       <div style={{ flex: 1 }}>
                         <strong>Your Matching Skills:</strong>
                         <ul style={{ margin: '0.5rem 0' }}>
-                          {Array.isArray(job.matching_skills) ? job.matching_skills.map((skill, i) => (
+                          {Array.isArray(job['Matching Skills']) ? job['Matching Skills'].map((skill, i) => (
                             <li key={i}>{skill}</li>
                           )) : <li>No matching skills listed</li>}
                         </ul>
@@ -264,7 +264,7 @@ function App() {
                       <div style={{ flex: 1 }}>
                         <strong>Skills to Develop:</strong>
                         <ul style={{ margin: '0.5rem 0' }}>
-                          {Array.isArray(job.skills_to_develop) ? job.skills_to_develop.map((skill, i) => (
+                          {Array.isArray(job['Skills to Develop']) ? job['Skills to Develop'].map((skill, i) => (
                             <li key={i}>{skill}</li>
                           )) : <li>No skills to develop listed</li>}
                         </ul>
@@ -365,19 +365,19 @@ function App() {
                       border: '1px solid #dee2e6'
                     }}
                   >
-                    <h3 style={{ margin: '0 0 0.5rem 0' }}>{job.job_title}</h3>
-                    <p style={{ margin: '0 0 0.5rem 0' }}>{job.job_description}</p>
+                    <h3 style={{ margin: '0 0 0.5rem 0' }}>{job['Job Title']}</h3>
+                    <p style={{ margin: '0 0 0.5rem 0' }}>{job['Job Description']}</p>
                     
                     <div style={{ marginTop: '0.5rem' }}>
                       <strong>Why This Job Matches:</strong>
-                      <p style={{ margin: '0.5rem 0' }}>{job.match_reasons}</p>
+                      <p style={{ margin: '0.5rem 0' }}>{job['Match Reasons']}</p>
                     </div>
 
                     <div style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem' }}>
                       <div style={{ flex: 1 }}>
                         <strong>Your Matching Skills:</strong>
                         <ul style={{ margin: '0.5rem 0' }}>
-                          {Array.isArray(job.matching_skills) ? job.matching_skills.map((skill, i) => (
+                          {Array.isArray(job['Matching Skills']) ? job['Matching Skills'].map((skill, i) => (
                             <li key={i}>{skill}</li>
                           )) : <li>No matching skills listed</li>}
                         </ul>
@@ -385,7 +385,7 @@ function App() {
                       <div style={{ flex: 1 }}>
                         <strong>Skills to Develop:</strong>
                         <ul style={{ margin: '0.5rem 0' }}>
-                          {Array.isArray(job.skills_to_develop) ? job.skills_to_develop.map((skill, i) => (
+                          {Array.isArray(job['Skills to Develop']) ? job['Skills to Develop'].map((skill, i) => (
                             <li key={i}>{skill}</li>
                           )) : <li>No skills to develop listed</li>}
                         </ul>
