@@ -226,84 +226,32 @@ function App() {
             onResumeUpdate={handleResumeUpdate}
           />
           
-          {/* Job Matching Section */}
-          <div style={{ marginTop: '2rem' }}>
-            <h2>Matching Job Opportunities</h2>
-            {loadingJobs ? (
-              <p>Finding matching jobs...</p>
-            ) : matchingJobs ? (
-              <div style={{ marginTop: '1rem' }}>
-                {matchingJobs.map((job, index) => (
-                  <div 
-                    key={index}
-                    style={{
-                      background: 'white',
-                      padding: '1rem',
-                      marginBottom: '1rem',
-                      borderRadius: '4px',
-                      border: '1px solid #dee2e6'
-                    }}
-                  >
-                    <h3 style={{ margin: '0 0 0.5rem 0' }}>{job['Job Title']}</h3>
-                    <p style={{ margin: '0 0 0.5rem 0' }}>{job['Job Description']}</p>
-                    
-                    <div style={{ marginTop: '0.5rem' }}>
-                      <strong>Why This Job Matches:</strong>
-                      <p style={{ margin: '0.5rem 0' }}>{job['Match Reasons']}</p>
-                    </div>
-
-                    <div style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem' }}>
-                      <div style={{ flex: 1 }}>
-                        <strong>Your Matching Skills:</strong>
-                        <ul style={{ margin: '0.5rem 0' }}>
-                          {Array.isArray(job['Matching Skills']) ? job['Matching Skills'].map((skill, i) => (
-                            <li key={i}>{skill}</li>
-                          )) : <li>No matching skills listed</li>}
-                        </ul>
-                      </div>
-                      <div style={{ flex: 1 }}>
-                        <strong>Skills to Develop:</strong>
-                        <ul style={{ margin: '0.5rem 0' }}>
-                          {Array.isArray(job['Skills to Develop']) ? job['Skills to Develop'].map((skill, i) => (
-                            <li key={i}>{skill}</li>
-                          )) : <li>No skills to develop listed</li>}
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+          {/* Q&A */}
+          <div>
+            <h2>Career Reflection Questions</h2>
+            <p style={{ marginBottom: '1rem' }}>
+              These questions help uncover your motivations, preferences, and openness to change.
+              Be honest and specific — the more thoughtful your answers, the more accurate and useful your career coaching summary will be.
+            </p>
+            {Object.entries(questions).map(([key, question]) => (
+              <div key={key} style={{ marginBottom: '1rem' }}>
+                <label><strong>{question}</strong></label><br />
+                <textarea
+                  rows={3}
+                  style={{ width: '100%' }}
+                  value={qaAnswers[key]}
+                  onChange={e => setQaAnswers({ ...qaAnswers, [key]: e.target.value })}
+                />
               </div>
-            ) : null}
+            ))}
+            <p style={{ fontStyle: 'italic', marginTop: '1rem' }}>
+              When you press the button below, your resume and reflections will be analyzed using OpenAI Chat Completions API to generate a personalized coaching report.
+            </p>
+            <button onClick={handleAnalyze} disabled={loading}>
+              Submit Answers & Analyze
+            </button>
           </div>
         </>
-      )}
-
-      {/* Q&A */}
-      {resumeData && (
-        <div>
-          <h2>Career Reflection Questions</h2>
-          <p style={{ marginBottom: '1rem' }}>
-            These questions help uncover your motivations, preferences, and openness to change.
-            Be honest and specific — the more thoughtful your answers, the more accurate and useful your career coaching summary will be.
-          </p>
-          {Object.entries(questions).map(([key, question]) => (
-            <div key={key} style={{ marginBottom: '1rem' }}>
-              <label><strong>{question}</strong></label><br />
-              <textarea
-                rows={3}
-                style={{ width: '100%' }}
-                value={qaAnswers[key]}
-                onChange={e => setQaAnswers({ ...qaAnswers, [key]: e.target.value })}
-              />
-            </div>
-          ))}
-          <p style={{ fontStyle: 'italic', marginTop: '1rem' }}>
-            When you press the button below, your resume and reflections will be analyzed using OpenAI Chat Completions API to generate a personalized coaching report.
-          </p>
-          <button onClick={handleAnalyze} disabled={loading}>
-            Submit Answers & Analyze
-          </button>
-        </div>
       )}
 
       {/* Output */}
