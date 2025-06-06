@@ -68,7 +68,12 @@ function ResumeSummary({ resumeData, onResumeUpdate }) {
           lineHeight: '1.5',
           padding: '0.5rem 0',
           userSelect: 'text',
-          cursor: 'text'
+          cursor: 'text',
+          maxHeight: '15em',
+          overflowY: 'auto',
+          border: '1px solid #dee2e6',
+          borderRadius: '4px',
+          padding: '1rem'
         }}
         onContextMenu={handleContextMenu}
       >
@@ -233,22 +238,30 @@ function App() {
       </p>
 
       {/* Resume Upload */}
-      <div style={{ marginBottom: '1rem' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <input 
-            type="file" 
-            accept=".pdf" 
-            onChange={handleFileChange}
-            style={{ flex: 1 }}
-          />
-          {file && (
-            <span style={{ color: '#666' }}>
-              Selected: {file.name}
-            </span>
-          )}
-        </div>
-        {loading && <span style={{ marginLeft: '1rem' }}>⏳ Processing resume...</span>}
-        {error && <p style={{ color: 'red', marginTop: '0.5rem' }}>❌ {error}</p>}
+      <div style={{ marginBottom: '2rem' }}>
+        <input
+          type="file"
+          accept=".pdf"
+          onChange={handleFileChange}
+          style={{ display: 'none' }}
+          id="resume-upload"
+        />
+        <label
+          htmlFor="resume-upload"
+          style={{
+            display: 'inline-block',
+            padding: '0.5rem 1rem',
+            background: '#007bff',
+            color: 'white',
+            borderRadius: '4px',
+            cursor: 'pointer',
+            marginRight: '1rem'
+          }}
+        >
+          Browse
+        </label>
+        {file && <span>Selected: {file.name}</span>}
+        {loading && <span style={{ marginLeft: '1rem' }}>Processing resume...</span>}
       </div>
 
       {/* Resume Summary */}
