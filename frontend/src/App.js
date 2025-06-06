@@ -250,17 +250,17 @@ function App() {
           style={{
             display: 'inline-block',
             padding: '0.5rem 1rem',
-            background: '#007bff',
+            background: loading ? '#6c757d' : '#007bff',
             color: 'white',
             borderRadius: '4px',
-            cursor: 'pointer',
-            marginRight: '1rem'
+            cursor: loading ? 'not-allowed' : 'pointer',
+            marginRight: '1rem',
+            opacity: loading ? 0.8 : 1
           }}
         >
-          Browse
+          {loading ? 'Processing...' : 'Browse'}
         </label>
         {file && <span>Selected: {file.name}</span>}
-        {loading && <span style={{ marginLeft: '1rem' }}>Processing resume...</span>}
       </div>
 
       {/* Resume Summary */}
