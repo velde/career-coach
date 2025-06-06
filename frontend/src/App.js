@@ -299,15 +299,16 @@ function App() {
               style={{
                 display: 'inline-block',
                 padding: '0.5rem 1rem',
-                background: '#007bff',
+                background: loading ? '#6c757d' : '#007bff',
                 color: 'white',
                 borderRadius: '4px',
-                cursor: 'pointer',
+                cursor: loading ? 'not-allowed' : 'pointer',
                 border: 'none',
-                fontSize: '1rem'
+                fontSize: '1rem',
+                opacity: loading ? 0.8 : 1
               }}
             >
-              Submit & Analyze
+              {loading ? 'Analyzing...' : 'Submit & Analyze'}
             </button>
           </div>
         </>
