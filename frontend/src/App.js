@@ -66,7 +66,6 @@ function ResumeSummary({ resumeData, onResumeUpdate }) {
         style={{
           fontFamily: 'sans-serif',
           lineHeight: '1.5',
-          padding: '0.5rem 0',
           userSelect: 'text',
           cursor: 'text',
           maxHeight: '15em',
