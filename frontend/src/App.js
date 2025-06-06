@@ -293,7 +293,20 @@ function App() {
               When you're ready, click the button below to analyze your resume and reflections. 
               You'll receive a personalized coaching summary and matching job opportunities.
             </p>
-            <button onClick={handleAnalyze} disabled={loading}>
+            <button 
+              onClick={handleAnalyze} 
+              disabled={loading}
+              style={{
+                display: 'inline-block',
+                padding: '0.5rem 1rem',
+                background: '#007bff',
+                color: 'white',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                border: 'none',
+                fontSize: '1rem'
+              }}
+            >
               Submit & Analyze
             </button>
           </div>
