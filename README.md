@@ -1,6 +1,6 @@
 # 🧠 Career Coach
 
-**Career Coach** is an AI-powered career reflection tool that helps job seekers gain insight into their strengths, gaps, and potential next steps. It analyzes your resume and self-reflection responses to generate a personalized career coaching report — just like working with a career consultant, but automated and scalable.
+**Career Coach** is an AI-powered career reflection tool that helps job seekers gain insight into their strengths, gaps, and potential next steps. It analyzes your resume and self-reflection responses to generate a personalized career coaching report and matching job opportunities — just like working with a career consultant, but automated and scalable.
 
 ---
 
@@ -15,6 +15,15 @@
   - Gaps and improvement areas
   - Actionable recommendations
   - Suggested job titles and industries
+- Get **matching job opportunities** that align with your:
+  - Career direction and goals
+  - Current skills and experience
+  - Areas for growth
+  - Each job match includes:
+    - Job title and description
+    - Why it matches your profile
+    - Your matching skills
+    - Skills you need to develop
 
 ---
 
@@ -35,8 +44,8 @@
 | Backend     | FastAPI, OpenAI API, pdfplumber, Render    |
 | AI/LLM      | OpenAI Chat Completions API               |
 | Deployment  | Vercel (frontend), Render (backend)        |
-| File Parsing| `pdfplumber`, `pypdfium2`                  |
-| Prompt Logic| Custom GPT prompt with structured JSON reply |
+| File Parsing| `pdfplumber`                              |
+| Prompt Logic| Custom GPT prompts with structured JSON replies |
 
 ---
 
@@ -51,11 +60,13 @@
         ├─ /upload_resume → parse PDF with pdfplumber
         ├─ /questions → loads shared JSON questions
         ├─ /analyze → merges resume + answers, calls OpenAI API
+        └─ /find_jobs → matches coaching summary with job opportunities
 ```
 
 - Shared logic (resume parsing, prompt formatting) is used by both CLI and backend
 - All user input is processed in-memory; nothing is stored long-term
 - PII redaction happens client-side before analysis to ensure privacy
+- Job matching uses the coaching summary to find relevant opportunities
 
 ---
 
@@ -95,7 +106,8 @@ I wanted to explore how AI could support meaningful human decision-making in car
 - Allow exporting report to PDF
 - Add user login to save sessions
 - Use fine-tuned models for deeper insight
-- Optional job market enrichment (e.g. LinkedIn or public APIs)
+- Add more job matching sources
+- Improve job matching accuracy with feedback
 
 ---
 
