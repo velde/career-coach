@@ -1,12 +1,12 @@
 import os
 from dotenv import load_dotenv
-from career_qa import (
+from core.career_qa import (
     collect_answers,
     save_answers_to_file,
     load_answers_from_file
 )
-from resume_parser import parse_pdf_resume
-from profile_analyzer import (
+from core.resume_parser import parse_pdf_resume
+from core.profile_analyzer import (
     run_profile_analysis,
     analyze_profile,
     merge_profile,

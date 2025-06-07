@@ -23,29 +23,27 @@ Return your response as JSON.
 """
 
 def load_questions():
-    path = Path(__file__).parent.parent / "shared" / "questions.json"
-    with open(path, "r", encoding="utf-8") as f:
+    project_root = Path(__file__).parent.parent
+    questions_path = project_root / "shared" / "questions.json"
+    
+    if not questions_path.exists():
+        raise FileNotFoundError(f"questions.json not found at {questions_path}")
+    
+    with open(questions_path, "r", encoding="utf-8") as f:
         return json.load(f)
 
 def collect_answers():
-    questions = load_questions()
+    """Collect answers to career-related questions."""
     answers = {}
+    questions = load_questions()
+    
+    print("\nPlease answer the following questions about your career goals and preferences:")
     for key, question in questions.items():
         print(f"\n{question}")
-        answer = input("Your answer: ")
+        answer = input("Your answer: ").strip()
         answers[key] = answer
+    
     return answers
-
-def collect_answers(interactive=True, predefined_answers=None):
-    responses = {}
-    for key, question in questions.items():
-        if interactive:
-            print(f"\n{question}")
-            answer = input("Your answer: ").strip()
-        else:
-            answer = predefined_answers.get(key, "")
-        responses[key] = answer
-    return responses
 
 def analyze_with_llm(responses, api_key):
     client = OpenAI(api_key=api_key)
