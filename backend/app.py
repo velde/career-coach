@@ -4,8 +4,10 @@ from pydantic import BaseModel
 import json
 import os
 
-# allow imports from ../core
-sys.path.insert(0, str(Path(__file__).parent.parent / "core"))
+# Add both core and parent directory to Python path
+project_root = Path(__file__).parent.parent
+sys.path.insert(0, str(project_root))
+sys.path.insert(0, str(project_root / "core"))
 
 # Import your existing modules
 from core.resume_parser import extract_text_from_pdf, parse_resume
