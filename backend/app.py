@@ -4,14 +4,14 @@ from pydantic import BaseModel
 import json
 import os
 
-# allow imports from ../cli
-sys.path.insert(0, str(Path(__file__).parent.parent / "cli"))
+# allow imports from ../core
+sys.path.insert(0, str(Path(__file__).parent.parent / "core"))
 
 # Import your existing modules
-from resume_parser import extract_text_from_pdf, parse_resume
-from career_qa      import collect_answers, load_answers_from_file
-from profile_analyzer import merge_profile, analyze_profile, print_human_summary, save_coaching_report
-from job_matcher import find_matching_jobs
+from core.resume_parser import extract_text_from_pdf, parse_resume
+from core.career_qa import collect_answers, load_answers_from_file
+from core.profile_analyzer import merge_profile, analyze_profile, print_human_summary, save_coaching_report
+from core.job_matcher import find_matching_jobs
 
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
