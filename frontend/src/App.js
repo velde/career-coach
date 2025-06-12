@@ -224,7 +224,7 @@ function App() {
 
   return (
     <div style={{ maxWidth: '800px', margin: '2rem auto', fontFamily: 'sans-serif' }}>
-      <h1>🧠 Career Coach</h1>
+      <h1>Career Coach</h1>
       <p style={{ marginBottom: '1.5rem' }}>
         This tool helps you explore your career path by analyzing your resume and career reflections. 
         It provides personalized coaching advice and matches you with relevant job opportunities that align with your skills, 

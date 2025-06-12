@@ -1,10 +1,10 @@
-# 🧠 Career Coach
+# Career Coach
 
 **Career Coach** is an AI-powered career reflection tool that helps job seekers gain insight into their strengths, gaps, and potential next steps. It analyzes your resume and self-reflection responses to generate a personalized career coaching report and matching job opportunities — just like working with a career consultant, but automated and scalable.
 
 ---
 
-## ✨ What It Does
+## What It Does
 
 - Upload your **PDF resume**
 - **Redact PII (Personally Identifiable Information)** by selecting text and right-clicking - redacted text is completely removed before analysis
@@ -27,16 +27,16 @@
 
 ---
 
-## 🚀 Live Demo
+## Live Demo
 
-🖥️ Try it now: [career-coach-alpha.vercel.app](https://career-coach-alpha.vercel.app)  
-📄 [Resume parsing and coaching powered by FastAPI on Render](https://career-coach-backend.onrender.com/health)
+Try it now: [career-coach-alpha.vercel.app](https://career-coach-alpha.vercel.app)  
+[Resume parsing and coaching powered by FastAPI on Render](https://career-coach-backend.onrender.com/health)
 
 > No personal data is stored — resume and answers are used only during the session.
 
 ---
 
-## 🧰 Tech Stack
+## Tech Stack
 
 | Layer       | Tools Used                                 |
 |-------------|---------------------------------------------|
@@ -49,7 +49,7 @@
 
 ---
 
-## 🧱 Architecture
+## Architecture
 
 ```
 [ Vercel Frontend ]
@@ -70,11 +70,11 @@
 
 ---
 
-## 🖥️ How to Run Locally
+## How to Run Locally
 
 ```bash
 # 1. Clone the repo
-git clone https://github.com/yourusername/career-coach
+git clone https://github.com/velde/career-coach
 cd career-coach
 
 # 2. Set up backend
@@ -95,13 +95,13 @@ npm start
 
 ---
 
-## 🎯 Why I Built This
+## Why I Built This
 
 I wanted to explore how AI could support meaningful human decision-making in career development where reflection and personalization matter. This project combines natural language processing, prompt engineering, and real-world UX design into a complete end-to-end product.
 
 ---
 
-## 💡 Future Improvements
+## Future Improvements
 
 - Allow exporting report to PDF
 - Add user login to save sessions
@@ -111,6 +111,6 @@ I wanted to explore how AI could support meaningful human decision-making in car
 
 ---
 
-## 📄 License
+## License
 
 This project is open source and free to use for educational and demonstration purposes.
