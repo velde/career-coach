@@ -74,7 +74,7 @@ Try it now: [career-coach-alpha.vercel.app](https://career-coach-alpha.vercel.ap
 
 ```bash
 # 1. Clone the repo
-git clone https://github.com/velde/career-coach
+git clone https://github.com/velde/career-coach.git
 cd career-coach
 
 # 2. Set up backend
@@ -92,12 +92,6 @@ cd ../frontend
 npm install
 npm start
 ```
-
----
-
-## Why I Built This
-
-I wanted to explore how AI could support meaningful human decision-making in career development where reflection and personalization matter. This project combines natural language processing, prompt engineering, and real-world UX design into a complete end-to-end product.
 
 ---
 
