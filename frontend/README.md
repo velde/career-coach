@@ -46,4 +46,4 @@ The frontend is deployed on Vercel. You can access the live demo at [career-coac
 
 ## License
 
-This project is open source and free to use for educational and demonstration purposes.
+This project is licensed under the MIT License - see the [LICENSE](../LICENSE) file for details.

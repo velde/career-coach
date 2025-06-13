@@ -1,30 +1,49 @@
 # Career Coach Backend
 
-FastAPI backend for the Career Coach application.
+This is the backend for the Career Coach application, built with FastAPI. It handles resume parsing, career Q&A sessions, and job matching.
 
-## Setup
+## Features
 
-1. Create a virtual environment in the project root:
-```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
+- Resume parsing and analysis
+- Career Q&A sessions
+- Personalized coaching reports
+- Job matching based on profile analysis
 
-2. Install dependencies from the project root:
-```bash
-pip install -r requirements.txt
-```
+## Tech Stack
 
-3. Set environment variables:
-```bash
-export OPENAI_API_KEY=your_key_here
-```
+- FastAPI
+- OpenAI API
+- pdfplumber for PDF parsing
+- Deployed on Render
 
-4. Run the server:
-```bash
-cd backend
-uvicorn app:app --reload --port 8000
-```
+## Getting Started
+
+### Prerequisites
+
+- Python 3.8+
+- pip
+
+### Installation
+
+1. Clone the repository:
+   ```sh
+   git clone https://github.com/velde/career-coach.git
+   cd career-coach/backend
+   ```
+
+2. Install dependencies:
+   ```sh
+   pip install -r requirements.txt
+   ```
+
+3. Start the server:
+   ```sh
+   uvicorn app:app --reload --port 8000
+   ```
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](../LICENSE) file for details.
 
 ## API Endpoints
 
